@@ -17,5 +17,15 @@ namespace Mission08_Team08.Models
             _context.Add(task);
             _context.SaveChanges();
         }
+        public void RemoveTask(Task task)
+        {
+            _context.Tasks.Remove(task);
+            _context.SaveChanges();
+        }
+        public void EditTask(Task task)
+        {
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
+        }
     }
 }
