@@ -8,6 +8,7 @@ namespace Mission08_Team08.Models
     public class Task
     {
         [Key]
+        [Required]
         public int TaskId { get; set; }
         [Required(ErrorMessage = "Please input a task name")]
         public string TaskName { get; set; }
