@@ -14,10 +14,10 @@ namespace Mission08_Team08.Models
         public string? DueDate { get; set; }
         [Required(ErrorMessage = "Please input a quadrant")]
         public int Quadrant { get; set; }
-        [ForeignKey("CategoryId")]
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
-        public bool Completed { get; set; }
+        [ForeignKey("Category")]
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
+        public bool? Completed { get; set; }
 
     }
 }

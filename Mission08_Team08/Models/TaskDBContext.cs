@@ -2,9 +2,9 @@
 
 namespace Mission08_Team08.Models
 {
-    public class TaskApplicationContext : DbContext
+    public class TaskDBContext : DbContext
     {
-        public TaskApplicationContext(DbContextOptions<TaskApplicationContext> options) : base (options)
+        public TaskDBContext(DbContextOptions<TaskDBContext> options) : base (options)
         {
         }
 
