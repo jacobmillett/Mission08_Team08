@@ -1,0 +1,25 @@
+﻿@model Mission08_Team08.Models.EditTask
+
+@{
+    ViewData["Title"] = "Edit Task";
+}
+
+<!-- Form for editing the task -->
+<form asp-action="EditTask">
+    <input type="hidden" asp-for="TaskId" />
+    <div class="form-group">
+        <label asp-for="TaskName" class="control-label"></label>
+        <input asp-for="TaskName" class="form-control" />
+        <span asp-validation-for="TaskName" class="text-danger"></span>
+    </div>
+    <!-- Add fields for other model properties here -->
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

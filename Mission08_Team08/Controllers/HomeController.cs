@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Mission08_Team08.Models;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Task = Mission08_Team08.Models.Task;
 
@@ -13,16 +15,18 @@ namespace Mission08_Team08.Controllers
     {
         private TaskRepository _repo;
 
-        public HomeController(TaskRepository temp)
+        public HomeController(TaskRepository repo)
         {
-            _repo = temp;
+            _repo = repo;
         }
 
+        //Route for Index.cshtml
         public IActionResult Index()
         {
             return View();
         }
 
+        //GET mostly for the drop down
         [HttpGet]
         public IActionResult AddNewTask()
         {
@@ -30,6 +34,7 @@ namespace Mission08_Team08.Controllers
             return View(new AddNewTask());
         }
 
+        // POST for adding the task to the DB
         [HttpPost]
         public IActionResult AddNewTask(AddNewTask viewModel)
         {
@@ -38,10 +43,10 @@ namespace Mission08_Team08.Controllers
                 var task = new Mission08_Team08.Models.Task
                 {
                     TaskName = viewModel.TaskName,
-                    DueDate = Convert.ToDateTime(viewModel.DueDate), // Convert from string to DateTime
-                    Quadrant = (Quadrant)(int)viewModel.Quadrant,
-                    CategoryId = viewModel.CategoryId, // Assuming CategoryId is correctly an int?
-                    Completed = viewModel.Completed // Assuming EF handles bool to int conversion
+                    DueDate = viewModel.DueDate, // Leaving this as a string and not converting
+                    Quadrant = viewModel.Quadrant, // Enumerate cause that's important I guess
+                    CategoryId = viewModel.CategoryId, 
+                    Completed = viewModel.Completed // No bool to int conversion
                 };
 
                 _repo.AddTask(task);
@@ -53,71 +58,56 @@ namespace Mission08_Team08.Controllers
         }
 
 
-        public IActionResult TaskList()
-        {
-            var Tasks = _repo.Tasks
-                .OrderBy(x => x.TaskName).ToList();
-
-            return View(Tasks);
-        }
-
-
-
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult EditTask(int taskId)
         {
-            var task = _repo.Tasks.FirstOrDefault(t => t.TaskId == id);
+            var task = _repo.Tasks.FirstOrDefault(t => t.TaskId == taskId);
             if (task == null)
             {
                 return NotFound();
             }
-            var viewModel = new AddNewTask
+
+            var viewModel = new EditTask // Created EditTask.cs model
             {
-                // Map task properties to viewModel
+                TaskName = task.TaskName,
+                DueDate = task.DueDate,
+                Quadrant = task.Quadrant,
+                CategoryId = task.CategoryId,
+                Completed = task.Completed
             };
-            ViewBag.Categories = new SelectList(_repo.Categories, "CategoryId", "CategoryName", viewModel.CategoryId);
-            return View("AddNewTask", viewModel);
+
+            ViewBag.Categories = new SelectList(_repo.Categories, "CategoryId", "CategoryName", task.CategoryId);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Edit(AddNewTask viewModel)
+        public IActionResult EditTask(EditTask viewModel) // Created EditTask.cs model
         {
             if (ModelState.IsValid)
             {
-                var taskToUpdate = _repo.Tasks.FirstOrDefault(t => t.TaskId == viewModel.TaskId); // Find the task by ID
-
-                if (taskToUpdate != null)
+                var task = _repo.Tasks.FirstOrDefault(t => t.TaskId == viewModel.TaskId);
+                if (task == null)
                 {
-                    // Update properties
-                    taskToUpdate.TaskName = viewModel.TaskName;
-                    taskToUpdate.DueDate = Convert.ToDateTime(viewModel.DueDate); // Ensure this is a DateTime?
-                    taskToUpdate.Quadrant = (Quadrant)(int)viewModel.Quadrant;
-                    taskToUpdate.CategoryId = viewModel.CategoryId; // This should be CategoryId
-                    taskToUpdate.Completed = viewModel.Completed;
-
-                    _repo.UpdateTask(taskToUpdate);
-                    return RedirectToAction("Quadrants");
+                    return NotFound();
                 }
 
-                else
-                {
-                    // Handle the case where the task doesn't exist
-                }
+                // Update properties
+                task.TaskName = viewModel.TaskName;
+                task.DueDate = viewModel.DueDate;
+                task.Quadrant = viewModel.Quadrant;
+                task.CategoryId = viewModel.CategoryId;
+                task.Completed = viewModel.Completed;
+
+                _repo.UpdateTask(task); // Implement this method if it doesn't exist
+
+                return RedirectToAction("Quadrants"); // Redirect after successful update
             }
 
-            // If the model state is not valid, or if the task doesn't exist, return to the view with the current model
+            ViewBag.Categories = new SelectList(_repo.Categories, "CategoryId", "CategoryName", viewModel.CategoryId);
             return View(viewModel);
         }
 
 
-        [HttpPost]
-        
-        public IActionResult Delete(Models.Task task)
-        {
-            _repo.RemoveTask(task);
-
-            return RedirectToAction("Quadrants");
-        }
 
         public IActionResult Quadrants()
         {
@@ -137,5 +127,6 @@ namespace Mission08_Team08.Controllers
 
             return View(tasksByQuadrant);
         }
+
     }
 }

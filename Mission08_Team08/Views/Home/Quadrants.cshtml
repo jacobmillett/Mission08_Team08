@@ -17,11 +17,11 @@
                     @foreach (var task in group)
                     {
                         <li>
-                            @task.TaskName - Due: @task.DueDate?.ToString("d")
+                            @task.TaskName - Due: @task.DueDate
                             <br />
                             Category: @task.Category?.CategoryName
                             <br />
-                            Completed: @(task.Completed.HasValue && task.Completed.Value ? "Yes" : "No")
+                            Completed: @(task.Completed ? "Yes" : "No")
                         </li>
                     }
                 </ul>
