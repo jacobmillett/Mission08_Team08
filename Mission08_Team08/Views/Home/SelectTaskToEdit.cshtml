@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Mission08_Team08.Models.Task>
+
+<div class="row">
+    @foreach (var task in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@task.TaskName</h5>
+                    <a href="@Url.Action("EditTask", "Home", new { taskId = task.TaskId })" class="btn btn-primary">Edit</a>
+                    <!-- Delete form within card -->
+                    <form asp-action="DeleteTask" method="post" class="d-inline" style="margin-left: 10px;">
+                        <input type="hidden" name="taskId" value="@task.TaskId" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
+                        @Html.AntiForgeryToken()
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

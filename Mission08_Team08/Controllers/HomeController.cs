@@ -107,7 +107,22 @@ namespace Mission08_Team08.Controllers
             return View(viewModel);
         }
 
+        public IActionResult SelectTaskToEdit()
+        {
+            var tasks = _repo.Tasks; // Fetch all tasks
+            return View(tasks);
+        }
 
+        [HttpPost]
+        public IActionResult DeleteTask(int taskId)
+        {
+            var task = _repo.Tasks.FirstOrDefault(t => t.TaskId == taskId);
+            if (task != null)
+            {
+                _repo.RemoveTask(task);
+            }
+            return RedirectToAction("SelectTaskToEdit");
+        }
 
         public IActionResult Quadrants()
         {
