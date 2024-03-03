@@ -1,0 +1,46 @@
+﻿@*
+    Sample text
+*@
+@{
+}
+@model Mission08_Team08.Models.AddNewTask
+
+<div class="text-center">
+    <h1 class="display-4">Add/Edit tasks</h1>
+    <p>Body text body text body text</p>
+</div>
+
+@using (Html.BeginForm(Model.TaskId == 0 ? "AddNewTask" : "Edit", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.TaskName)
+        @Html.TextBoxFor(model => model.TaskName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.TaskName)
+    </div>
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(model => model.DueDate)
+        @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control"})
+        @Html.ValidationMessageFor(model => model.DueDate)
+    </div>
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(model => model.Quadrant)
+        @Html.DropDownListFor(model => model.Quadrant, new SelectList(Enum.GetValues(typeof(Mission08_Team08.Models.Quadrant))), "Select Quadrant", new { @class = "form-control" })        @Html.ValidationMessageFor(model => model.Quadrant)
+    </div>
+    <br />
+    <div class="form-group">
+        Category
+        @Html.DropDownListFor(model => model.CategoryId, (SelectList)ViewBag.Categories, "Choose Category", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.CategoryId)
+    </div>
+    <br />
+    <div class="form-group">
+        @Html.HiddenFor(model => model.Completed)
+    </div>
+    <br />
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+}

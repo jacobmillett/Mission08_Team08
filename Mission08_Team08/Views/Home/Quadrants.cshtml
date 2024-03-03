@@ -1,0 +1,35 @@
+﻿@model IEnumerable<IGrouping<Mission08_Team08.Models.Quadrant, Mission08_Team08.Models.Task>>
+
+@{
+    ViewData["Title"] = "Task Quadrants";
+}
+
+<div class="container">
+    <h1 class="text-center display-4">@ViewData["Title"]</h1>
+    <p class="text-center">Tasks organized by their quadrants.</p>
+
+    <div class="row">
+        @foreach (var group in Model.OrderBy(g => g.Key))
+        {
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">@Enum.GetName(typeof(Mission08_Team08.Models.Quadrant), group.Key)</h3>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var task in group)
+                        {
+                            <li class="list-group-item">
+                                <strong>@task.TaskName</strong> - Due: @task.DueDate
+                                <br />
+                                Category: @task.Category?.CategoryName
+                                <br />
+                                Completed: @(task.Completed ? "Yes" : "No")
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>

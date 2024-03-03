@@ -12,13 +12,13 @@ namespace Mission08_Team08.Models
         public int TaskId { get; set; }
         [Required(ErrorMessage = "Please input a task name")]
         public string TaskName { get; set; }
-        public string? DueDate { get; set; }
+        public string DueDate { get; set; }
         [Required(ErrorMessage = "Please input a quadrant")]
-        public int Quadrant { get; set; }
+        public Quadrant Quadrant { get; set; }
         [ForeignKey("Category")]
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
-        public bool? Completed { get; set; }
+        public bool Completed { get; set; }
 
     }
 }

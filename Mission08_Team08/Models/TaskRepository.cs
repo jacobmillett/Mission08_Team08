@@ -2,12 +2,13 @@
 {
     public interface TaskRepository
     {
-        List <Task> Tasks { get; }
+        List<Task> Tasks { get; }
+        IEnumerable<Category> Categories { get; } // Added
 
-        public void AddTask(Task task);
+        IEnumerable<Task> GetTasksWithCategories();
 
-        public void RemoveTask(Task task);
-
-        public void UpdateTask(Task task);
+        void AddTask(Task task);
+        void RemoveTask(Task task);
+        void UpdateTask(Task task);
     }
 }
